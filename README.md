@@ -58,10 +58,10 @@ Implement environment variable management in your Docker Compose file to handle 
 (development, production)
 
 Run in development env
-docker compose --env-file .env.dev up
+docker compose --env-file .env.dev up --build
 
 Run in production env 
-docker compose --env-file .env.prod up
+docker compose --env-file .env.prod up --build
 
 📄 License
 This project is licensed under the MIT License.
