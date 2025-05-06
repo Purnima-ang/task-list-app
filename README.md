@@ -50,6 +50,10 @@ docker compose up --build
 Visit the app in your browser:
 ➡️ http://localhost:5000
 
+Running application UI
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/d427a501-4b54-457f-a085-42a67fc41b8f" />
+
+
 📄 License
 This project is licensed under the MIT License.
 
