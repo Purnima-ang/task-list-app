@@ -53,6 +53,15 @@ Visit the app in your browser:
 Running application UI
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/d427a501-4b54-457f-a085-42a67fc41b8f" />
 
+**### Bonus question**
+Implement environment variable management in your Docker Compose file to handle different environments 
+(development, production)
+
+Run in development env
+docker compose --env-file .env.dev up
+
+Run in production env 
+docker compose --env-file .env.prod up
 
 📄 License
 This project is licensed under the MIT License.
