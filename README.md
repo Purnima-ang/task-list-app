@@ -1,71 +1,143 @@
 # 📝 Task List App with Flask, PostgreSQL, and Redis
 
-This project is a simple **Task List** web application built using **Flask** for the frontend/backend, **PostgreSQL** for persistent task storage, and **Redis** for caching. All services are containerized using **Docker Compose**.
+This project is a multi-service Task List web application built with **Flask**, **PostgreSQL**, and **Redis**, containerized using **Docker Compose**, and deployed via a **CI/CD pipeline using GitHub Actions**. It includes advanced Docker practices like multi-stage builds, environment management, persistent volumes, and secure deployment.
 
 ---
 
 ## 🚀 Features
 
 - ✅ Create and view tasks via a web UI
-- 🐘 PostgreSQL database for persistent storage
-- 🔄 Redis cache for faster access
-- 🐳 Multi-service architecture using Docker Compose
-- ⚙️ Environment configuration with `.env` support
+- 🐘 PostgreSQL for persistent storage
+- 🔄 Redis for caching
+- 🐳 Dockerized multi-service architecture
+- 🔐 Environment-specific configuration (`.env.dev`, `.env.prod`)
+- 📦 Multi-stage builds for optimized images
+- 🚢 CI/CD pipeline with GitHub Actions + Docker Hub
+- 📊 Optional: Advanced logging & monitoring with ELK / Prometheus
 
 ---
 
-## 📦 Project Structure
-
-task-list-app/
-├── web/ # Flask app
-│ ├── app.py
-│ ├── requirements.txt
-│ ├── Dockerfile
-│ └── templates/
-│ └── index.html
-├── db/ # PostgreSQL database
-│ ├── Dockerfile
-│ └── init.sql # Optional: DB init script
-├── cache/ # Redis service
-│ └── Dockerfile
-├── docker-compose.yml
-└── README.md
-
----
-
-## 🛠 Getting Started
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-### Run the App
+## 🗂 Project Structure
 
 ```bash
-git clone https://github.com/your-username/task-list-app.git
-cd task-list-app
-docker compose up --build
+task-list-app/
+├── web/                  # Flask app
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── templates/
+│       └── index.html
+├── db/                   # PostgreSQL
+│   ├── Dockerfile
+│   └── init.sql
+├── cache/                # Redis
+│   └── Dockerfile
+├── docker-compose.yml
+├── .env.dev              # Development env vars
+├── .env.prod             # Production env vars
+├── .github/workflows/
+│   └── ci.yml            # GitHub Actions pipeline
+└── README.md
 
-Visit the app in your browser:
-➡️ http://localhost:5000
+🛠️ Getting Started
+✅ Prerequisites
+Docker 20.10+
 
-Running application UI
-<img width="959" alt="image" src="https://github.com/user-attachments/assets/d427a501-4b54-457f-a085-42a67fc41b8f" />
+Docker Compose 1.27+
 
-**### Bonus question**
-Implement environment variable management in your Docker Compose file to handle different environments 
-(development, production)
+(For CI/CD) GitHub account and Docker Hub account
 
-Run in development env
+🚀 Run in Development
 docker compose --env-file .env.dev up --build
 
-Run in production env 
-docker compose --env-file .env.prod up --build
+App will be available at:
+➡️ http://localhost:5000
 
-📄 License
-This project is licensed under the MIT License.
+🚀 Run in Production
+docker compose --env-file .env.prod up --build -d
 
-🤝 Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you’d like to change.
+⚙️ Environment Configuration
+Use .env.dev and .env.prod to manage per-environment variables:
 
+# .env.dev
+REDIS_HOST=cache
+REDIS_PORT=6379
+DB_HOST=db
+DB_NAME=tasksdb
+DB_USER=postgres
+DB_PASSWORD=postgres
+
+Then in docker-compose.yml, these are injected via:
+
+environment:
+  REDIS_HOST: ${REDIS_HOST}
+  ...
+
+📦 Docker Setup
+Each service has its own Dockerfile
+
+The Flask app uses a multi-stage build for optimized image size
+
+PostgreSQL data is persisted via a Docker volume (db_data)
+
+Services communicate over a default Docker bridge network
+
+🛡️ Security & Best Practices
+Multi-stage builds for smaller images
+
+No root usage in containers (where applicable)
+
+.env files are excluded from git
+
+Secrets like DOCKER_USERNAME are stored securely in GitHub
+
+🔄 CI/CD Pipeline (GitHub Actions)
+A full pipeline is included in .github/workflows/ci.yml:
+
+💡 Steps:
+Checkout Code
+
+Log in to Docker Hub
+
+Build & Tag Images
+
+Push to Docker Hub
+
+(Optional) Deploy via SSH or similar
+
+🧪 Set Secrets in GitHub
+Go to your repo → Settings → Secrets → Actions → Add:
+
+DOCKER_USERNAME
+
+DOCKER_PASSWORD
+
+📊 Logging & Monitoring (Bonus)
+To enable advanced logging/monitoring:
+
+Option A: ELK Stack
+Logstash collects logs from services
+
+Elasticsearch stores them
+
+Kibana visualizes
+
+Option B: Prometheus + Grafana
+Prometheus scrapes metrics
+
+Grafana dashboards visualize service health
+
+Instructions for this setup can be added if required.
+
+🧪 Testing
+TBD: Add Python unit tests in /web/tests and extend the CI pipeline to run them via:
+
+- name: Run tests
+  run: pytest
+
+🌐 Deployment Preview
+Live: http://localhost:5000
+
+Or deploy via Docker Hub:
+
+docker pull <your-dockerhub-username>/task-list-app:latest
